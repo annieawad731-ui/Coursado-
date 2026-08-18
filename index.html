@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coursado Dashboard</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<div class="app-container">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div>
+            <div class="brand">
+                <div class="logo-icon">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+
+                <h2>COURSADO</h2>
+
+                <span class="sub-brand">
+                    LET US SHAPE LITTLE MINDS
+                </span>
+            </div>
+
+            <nav class="nav-menu">
+
+                <a href="#" class="nav-item active" data-view="dashboard">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="#" class="nav-item" data-view="students">
+                    <i class="fa-solid fa-user-graduate"></i>
+                    <span>Students</span>
+                </a>
+
+                <a href="#" class="nav-item" data-view="payments">
+                    <i class="fa-solid fa-wallet"></i>
+                    <span>Payments</span>
+                </a>
+
+                <a href="#" class="nav-item" data-view="reports">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>Reports & Exports</span>
+                </a>
+
+            </nav>
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- TOP NAVBAR -->
+        <header class="top-navbar">
+
+            <h1 id="pageTitle">
+                Dashboard Overview
+            </h1>
+
+            <div class="user-actions">
+
+                <button id="openModalBtn" class="btn primary-btn">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Add Payment</span>
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <!-- ===================================================== -->
+        <!-- DASHBOARD -->
+        <!-- ===================================================== -->
+
+        <div id="dashboardView" class="view-section">
+
+            <section class="metrics-grid">
+
+                <div class="metric-card">
+                    <div>
+                        <span class="metric-title">
+                            TOTAL STUDENTS
+                        </span>
+
+                        <h2 id="totalStudents">0</h2>
+                    </div>
+
+                    <div class="metric-icon blue">
+                        <i class="fa-solid fa-user-graduate"></i>
+                    </div>
+                </div>
+
+
+                <div class="metric-card">
+                    <div>
+                        <span class="metric-title">
+                            TOTAL PAYMENTS
+                        </span>
+
+                        <h2 id="totalPaymentsCount">0</h2>
+                    </div>
+
+                    <div class="metric-icon indigo">
+                        <i class="fa-solid fa-receipt"></i>
+                    </div>
+                </div>
+
+
+                <div class="metric-card">
+                    <div>
+                        <span class="metric-title">
+                            TOTAL COLLECTED
+                        </span>
+
+                        <h2 id="totalCollected">
+                            EGP 0
+                        </h2>
+                    </div>
+
+                    <div class="metric-icon green">
+                        <i class="fa-solid fa-wallet"></i>
+                    </div>
+                </div>
+
+
+                <div class="metric-card">
+                    <div>
+                        <span class="metric-title">
+                            THIS MONTH
+                        </span>
+
+                        <h2 id="thisMonthCollected">
+                            EGP 0
+                        </h2>
+                    </div>
+
+                    <div class="metric-icon teal">
+                        <i class="fa-solid fa-calendar-days"></i>
+                    </div>
+                </div>
+
+            </section>
+
+
+            <div class="content-grid">
+
+                <section class="panel recent-payments-panel">
+
+                    <div class="panel-header">
+
+                        <h2>
+                            Recent Payments
+                        </h2>
+
+                        <a href="#"
+                           class="view-all"
+                           data-target="payments">
+                            View All Payments
+                        </a>
+
+                    </div>
+
+
+                    <div class="table-responsive">
+
+                        <table>
+
+                            <thead>
+                                <tr>
+                                    <th>STUDENT</th>
+                                    <th>DATE</th>
+                                    <th>AMOUNT</th>
+                                    <th>PAID FOR</th>
+                                    <th>METHOD</th>
+                                    <th>ACTION</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="paymentsTableBody"></tbody>
+
+                        </table>
+
+                    </div>
+
+                </section>
+
+
+                <div class="right-column">
+
+                    <section class="panel quick-actions-panel">
+
+                        <h2>
+                            Quick Actions
+                        </h2>
+
+                        <div class="quick-grid">
+
+                            <button class="quick-btn"
+                                    id="quickAddPayment">
+
+                                <i class="fa-solid fa-plus-circle"></i>
+
+                                Add Payment
+
+                            </button>
+
+
+                            <button class="quick-btn"
+                                    data-target="reports">
+
+                                <i class="fa-solid fa-chart-line"></i>
+
+                                View Reports
+
+                            </button>
+
+                        </div>
+
+                    </section>
+
+
+                    <section class="panel recent-activity-panel">
+
+                        <h2>
+                            Recent Activity
+                        </h2>
+
+                        <div class="activity-list"
+                             id="activityList">
+
+                            <p class="empty-activity">
+                                No recent activity recorded yet.
+                            </p>
+
+                        </div>
+
+                    </section>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ===================================================== -->
+        <!-- STUDENTS -->
+        <!-- ===================================================== -->
+
+        <div id="studentsView"
+             class="view-section"
+             style="display: none;">
+
+            <section class="panel">
+
+                <div class="panel-header students-panel-header">
+
+                    <h2>
+                        Enrolled Students Directory
+                    </h2>
+
+
+                    <!-- SEARCH CONTROLS -->
+                    <div class="student-search-controls">
+
+                        <!-- SEARCH BY NAME -->
+                        <div class="student-search-wrapper">
+
+                            <i class="fa-solid fa-magnifying-glass"></i>
+
+                            <input
+                                type="text"
+                                id="studentSearchInput"
+                                placeholder="Search by student name..."
+                                class="search-box"
+                            >
+
+                        </div>
+
+
+                        <!-- CATEGORY -->
+                        <select
+                            id="studentCategoryFilter"
+                            class="category-filter">
+
+                            <option value="all">
+                                All Categories
+                            </option>
+
+                            <option value="Juniors">
+                                Juniors
+                            </option>
+
+                            <option value="Kiddos">
+                                Kiddos
+                            </option>
+
+                            <option value="Beginners">
+                                Beginners
+                            </option>
+
+                            <option value="Movers">
+                                Movers
+                            </option>
+
+                            <option value="Flyers">
+                                Flyers
+                            </option>
+
+                            <option value="Supers">
+                                Supers
+                            </option>
+
+                            <option value="Drama">
+                                Drama
+                            </option>
+
+                            <option value="Robotics">
+                                Robotics
+                            </option>
+                            
+                            <option value="Programming">
+                                Programming
+                            </option>
+
+                            <option value="Other">
+                                Other
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- STUDENTS TABLE -->
+
+                <div class="table-responsive">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    STUDENT NAME
+                                </th>
+
+                                <th>
+                                    TOTAL PAYMENTS MADE
+                                </th>
+
+                                <th>
+                                    TOTAL PAID (EGP)
+                                </th>
+
+                                <th>
+                                    LATEST STAGE / CATEGORY
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="studentsTableBody"></tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+        </div>
+
+
+        <!-- ===================================================== -->
+        <!-- PAYMENTS -->
+        <!-- ===================================================== -->
+
+        <div id="paymentsView"
+             class="view-section"
+             style="display: none;">
+
+            <section class="panel">
+
+                <div class="panel-header">
+
+                    <h2>
+                        All Payment Records
+                    </h2>
+
+                    <input
+                        type="text"
+                        id="paymentSearchInput"
+                        placeholder="Search records..."
+                        class="search-box"
+                    >
+
+                </div>
+
+
+                <div class="table-responsive">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>STUDENT</th>
+                                <th>DATE</th>
+                                <th>AMOUNT</th>
+                                <th>PAID FOR</th>
+                                <th>METHOD</th>
+                                <th>ACTION</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="allPaymentsTableBody"></tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+        </div>
+
+
+        <!-- ===================================================== -->
+        <!-- REPORTS -->
+        <!-- ===================================================== -->
+
+        <div id="reportsView"
+             class="view-section"
+             style="display: none;">
+
+            <div class="reports-grid">
+
+                <section class="panel">
+
+                    <h2>
+                        Financial Summary
+                    </h2>
+
+                    <div class="report-stats">
+
+                        <div class="report-stat-item">
+
+                            <span>
+                                Total Lifetime Revenue:
+                            </span>
+
+                            <strong id="reportTotalRevenue"
+                                    style="color: #059669;">
+                                EGP 0
+                            </strong>
+
+                        </div>
+
+
+                        <div class="report-stat-item">
+
+                            <span>
+                                Total Transactions:
+                            </span>
+
+                            <strong id="reportTotalCount">
+                                0
+                            </strong>
+
+                        </div>
+
+
+                        <div class="report-stat-item">
+
+                            <span>
+                                Unique Active Students:
+                            </span>
+
+                            <strong id="reportUniqueStudents">
+                                0
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <section class="panel">
+
+                    <h2>
+                        Category Breakdown
+                    </h2>
+
+                    <div id="categoryBreakdownContainer"
+                         class="breakdown-list">
+
+                        <p class="empty-activity">
+                            No data available for breakdown.
+                        </p>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+
+            <div class="content-grid"
+                 style="margin-top: 1.5rem;">
+
+                <section class="panel">
+
+                    <h2>
+                        Monthly Revenue Chart
+                    </h2>
+
+                    <div class="chart-container">
+
+                        <canvas id="monthlyChart"></canvas>
+
+                    </div>
+
+                </section>
+
+
+                <section class="panel">
+
+                    <h2>
+                        Download Reports (Excel / CSV)
+                    </h2>
+
+                    <p class="export-description">
+                        Export filtered data spreadsheets directly
+                        to your computer.
+                    </p>
+
+
+                    <div class="export-controls">
+
+                        <div class="input-group">
+
+                            <label for="exportMonthSelect">
+                                Select Month to Export
+                            </label>
+
+                            <select id="exportMonthSelect">
+
+                                <option value="all">
+                                    All Months (Lifetime)
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <button
+                            id="downloadMonthExcelBtn"
+                            class="btn primary-btn export-btn">
+
+                            <i class="fa-solid fa-file-excel"></i>
+
+                            Download Month Spreadsheet
+
+                        </button>
+
+
+                        <hr>
+
+
+                        <div class="input-group">
+
+                            <label for="exportCategorySelect">
+                                Select Category to Export
+                            </label>
+
+                            <select id="exportCategorySelect">
+
+                                <option value="all">
+                                    All Categories
+                                </option>
+
+                                <option value="Juniors">
+                                    Juniors
+                                </option>
+
+                                <option value="Kiddos">
+                                    Kiddos
+                                </option>
+
+                                <option value="Beginners">
+                                    Beginners
+                                </option>
+
+                                <option value="Movers">
+                                    Movers
+                                </option>
+
+                                <option value="Flyers">
+                                    Flyers
+                                </option>
+
+                                <option value="Supers">
+                                    Supers
+                                </option>
+
+                                <option value="Drama">
+                                    Drama
+                                </option>
+
+                                 <option value="Robotics">
+                                    Robotics
+                                </option>
+
+                                 <option value="Programming">
+                                    Programming
+                                </option>
+
+                                <option value="Other">
+                                    Other
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <button
+                            id="downloadCategoryExcelBtn"
+                            class="btn category-export-btn">
+
+                            <i class="fa-solid fa-file-excel"></i>
+
+                            Download Category Spreadsheet
+
+                        </button>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<!-- ===================================================== -->
+<!-- ADD PAYMENT MODAL -->
+<!-- ===================================================== -->
+
+<div id="paymentModal"
+     class="modal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h2>
+                Add New Payment
+            </h2>
+
+            <span id="closeModal"
+                  class="close-btn">
+                &times;
+            </span>
+
+        </div>
+
+
+        <form id="paymentForm">
+
+            <div class="input-group">
+
+                <label for="studentName">
+                    Student Name
+                </label>
+
+                <input
+                    type="text"
+                    id="studentName"
+                    placeholder="Enter student's full name"
+                    required
+                >
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label for="categorySelect">
+                    Paid For / Category
+                </label>
+
+                <select
+                    id="categorySelect"
+                    required>
+
+                    <option value=""
+                            disabled
+                            selected>
+                        Select category...
+                    </option>
+
+                    <option value="Juniors">
+                        Juniors
+                    </option>
+
+                    <option value="Kiddos">
+                        Kiddos
+                    </option>
+
+                    <option value="Beginners">
+                        Beginners
+                    </option>
+
+                    <option value="Movers">
+                        Movers
+                    </option>
+
+                    <option value="Flyers">
+                        Flyers
+                    </option>
+
+                    <option value="Supers">
+                        Supers
+                    </option>
+
+                    <option value="Drama">
+                        Drama
+                    </option>
+
+                    <option value="Robotics">
+                        Robotics
+                    </option>
+
+                    <option value="Programming">
+                        Programming
+                    </option>
+
+                    <option value="Other">
+                        Other
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="input-group"
+                 id="otherCategoryWrapper"
+                 style="display: none;">
+
+                <label for="otherCategoryText">
+                    Custom Category
+                </label>
+
+                <input
+                    type="text"
+                    id="otherCategoryText"
+                    placeholder="Specify custom description..."
+                >
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label for="amountPaid">
+                    Amount (EGP)
+                </label>
+
+                <input
+                    type="number"
+                    id="amountPaid"
+                    min="0"
+                    step="0.5"
+                    placeholder="0"
+                    required
+                >
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label for="paymentMethod">
+                    Payment Method
+                </label>
+
+                <select
+                    id="paymentMethod"
+                    required>
+
+                    <option value="Cash">
+                        Cash
+                    </option>
+
+                    <option value="InstaPay">
+                        InstaPay
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="input-group">
+
+                <label for="paymentDate">
+                    Date
+                </label>
+
+                <input
+                    type="date"
+                    id="paymentDate"
+                    required
+                >
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="btn primary-btn submit-btn">
+
+                Save Payment
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>
