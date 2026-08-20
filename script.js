@@ -1502,6 +1502,151 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // =========================================================
+    // EXCEL / CSV IMPORT & FILE-TITLE CATEGORIZATION
+    // =========================================================
+
+    const openImportBtn = document.getElementById('openImportBtn');
+    const importDropZone = document.getElementById('importDropZone');
+    const excelFileInput = document.getElementById('excelFileInput');
+    const importPreviewModal = document.getElementById('importPreviewModal');
+    const closeImportPreview = document.getElementById('closeImportPreview');
+    const cancelImportBtn = document.getElementById('cancelImportBtn');
+    const confirmImportBtn = document.getElementById('confirmImportBtn');
+    const importPreviewBody = document.getElementById('importPreviewBody');
+    const importSummary = document.getElementById('importSummary');
+    const importStatus = document.getElementById('importStatus');
+
+    let parsedImportData = [];
+
+    openImportBtn.addEventListener('click', () => excelFileInput.click());
+    importDropZone.addEventListener('click', () => excelFileInput.click());
+
+    importDropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        importDropZone.style.borderColor = 'var(--primary)';
+        importDropZone.style.background = '#e0f2fe';
+    });
+
+    importDropZone.addEventListener('dragleave', () => {
+        importDropZone.style.borderColor = '#cbd5e1';
+        importDropZone.style.background = '#f8fafc';
+    });
+
+    importDropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        importDropZone.style.borderColor = '#cbd5e1';
+        importDropZone.style.background = '#f8fafc';
+        if (e.dataTransfer.files.length > 0) {
+            handleFile(e.dataTransfer.files[0]);
+        }
+    });
+
+    excelFileInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            handleFile(e.target.files[0]);
+        }
+    });
+
+    function getCategoryFromFileTitle(fileName) {
+        const fname = String(fileName || '').trim().toLowerCase();
+        
+        if (fname.startsWith('m.')) return 'Movers';
+        if (fname.startsWith('f.')) return 'Flyers';
+        if (fname.startsWith('k.')) return 'Kiddos';
+        if (fname.startsWith('j.')) return 'Juniors';
+        if (fname.startsWith('b.')) return 'Beginners';
+        if (fname.startsWith('s.')) return 'Supers';
+        
+        return 'Other';
+    }
+
+    function handleFile(file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const firstSheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[firstSheetName];
+                const rows = XLSX.utils.sheet_to_json(worksheet);
+
+                if (rows.length === 0) {
+                    alert('The uploaded file is empty.');
+                    return;
+                }
+
+                const category = getCategoryFromFileTitle(file.name);
+
+                parsedImportData = rows.map((row, index) => {
+                    const getVal = (possibleKeys) => {
+                        for (const key of Object.keys(row)) {
+                            const cleanedKey = key.trim().toLowerCase();
+                            if (possibleKeys.includes(cleanedKey)) {
+                                return row[key];
+                            }
+                        }
+                        return null;
+                    };
+
+                    const rawName = getVal(['names', 'name', 'student name', 'student_name']) || 'Unknown Student';
+                    const rawFeeVal = getVal(['fees', 'fee', 'amount', 'paid', 'price']) || 0;
+                    const rawAmount = parseFloat(rawFeeVal);
+                    
+                    const rawDate = getVal(['date']) || new Date().toISOString().split('T')[0];
+                    const rawMethod = getVal(['method', 'payment method']) || 'Cash';
+
+                    return {
+                        id: Date.now() + index,
+                        name: String(rawName).trim(),
+                        category: category,
+                        amount: isNaN(rawAmount) ? 0 : rawAmount,
+                        method: String(rawMethod).trim(),
+                        date: String(rawDate).split('T')[0]
+                    };
+                });
+
+                renderImportPreview();
+                importPreviewModal.style.display = 'flex';
+            } catch (err) {
+                console.error(err);
+                alert('Error parsing file. Please make sure it is a valid Excel or CSV file.');
+            }
+        };
+        reader.readAsArrayBuffer(file);
+    }
+
+    function renderImportPreview() {
+        importPreviewBody.innerHTML = '';
+        parsedImportData.forEach(item => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td><strong>${escapeHtml(item.name)}</strong></td>
+                <td><span class="method-badge">${escapeHtml(item.category)}</span></td>
+                <td style="color:#059669; font-weight:600;">EGP ${item.amount.toLocaleString()}</td>
+                <td>${escapeHtml(item.date)}</td>
+                <td><span style="color:#10b981;"><i class="fa-solid fa-check"></i> Ready</span></td>
+            `;
+            importPreviewBody.appendChild(row);
+        });
+        importSummary.innerHTML = `<strong>Total records detected:</strong> ${parsedImportData.length}`;
+    }
+
+    closeImportPreview.addEventListener('click', () => { importPreviewModal.style.display = 'none'; });
+    cancelImportBtn.addEventListener('click', () => { importPreviewModal.style.display = 'none'; });
+
+    confirmImportBtn.addEventListener('click', () => {
+        if (parsedImportData.length === 0) return;
+
+        payments = [...parsedImportData, ...payments];
+        saveAndRender();
+
+        importPreviewModal.style.display = 'none';
+        excelFileInput.value = '';
+        importStatus.innerHTML = `<span style="color:#10b981; font-weight:600;"><i class="fa-solid fa-circle-check"></i> Successfully imported ${parsedImportData.length} student records!</span>`;
+    });
+
+
+    // =========================================================
     // ESCAPE HTML
     // =========================================================
 

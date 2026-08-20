@@ -11,6 +11,7 @@
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 
 <body>
@@ -338,6 +339,10 @@
                                 Programming
                             </option>
 
+                             <option value="Event">
+                                Event
+                            </option>
+
                             <option value="Other">
                                 Other
                             </option>
@@ -453,6 +458,47 @@
         <div id="reportsView"
              class="view-section"
              style="display: none;">
+
+            <section class="panel import-panel" style="margin-bottom: 1.5rem;">
+                <div class="panel-header">
+                    <div>
+                        <h2>Import Students & Payments</h2>
+                        <p class="export-description">Drop an Excel or CSV file and Coursado will detect student names, categories, and amounts automatically.</p>
+                    </div>
+                    <button id="openImportBtn" class="btn primary-btn">
+                        <i class="fa-solid fa-file-import"></i>
+                        Import Excel
+                    </button>
+                </div>
+                <div id="importDropZone" style="border:2px dashed #cbd5e1;border-radius:14px;padding:2rem;text-align:center;cursor:pointer;background:#f8fafc;transition:.2s;">
+                    <i class="fa-solid fa-cloud-arrow-up" style="font-size:2rem;color:#0ea5e9;margin-bottom:.75rem;"></i>
+                    <h3 style="margin:.25rem 0;">Drop your Excel file here</h3>
+                    <p style="margin:.25rem 0;color:#64748b;">or click to choose a .xlsx, .xls, or .csv file</p>
+                    <input id="excelFileInput" type="file" accept=".xlsx,.xls,.csv" hidden>
+                </div>
+                <div id="importStatus" style="margin-top:1rem;"></div>
+            </section>
+
+            <div id="importPreviewModal" class="modal">
+                <div class="modal-content" style="max-width:1000px;max-height:90vh;overflow:auto;">
+                    <div class="modal-header">
+                        <h2>Import Preview</h2>
+                        <span id="closeImportPreview" class="close-btn">&times;</span>
+                    </div>
+                    <div id="importMappingArea"></div>
+                    <div id="importSummary" style="margin:1rem 0;"></div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead><tr><th>STUDENT</th><th>CATEGORY</th><th>AMOUNT</th><th>DATE</th><th>STATUS</th></tr></thead>
+                            <tbody id="importPreviewBody"></tbody>
+                        </table>
+                    </div>
+                    <div style="display:flex;justify-content:flex-end;gap:.75rem;margin-top:1rem;">
+                        <button id="cancelImportBtn" class="btn">Cancel</button>
+                        <button id="confirmImportBtn" class="btn primary-btn">Import Records</button>
+                    </div>
+                </div>
+            </div>
 
             <div class="reports-grid">
 
@@ -639,6 +685,10 @@
                                     Programming
                                 </option>
 
+                                 <option value="Event">
+                                    Event 
+                                </option>
+
                                 <option value="Other">
                                     Other
                                 </option>
@@ -762,6 +812,10 @@
 
                     <option value="Programming">
                         Programming
+                    </option>
+
+                    <option value="Event">
+                        Event
                     </option>
 
                     <option value="Other">
